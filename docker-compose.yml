@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 5000:5000
+  
+  redis:
+    image: redis:6.0 # check if python redis==2.10.3 works with specific version
+    # specify env with config (pass, ency)
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
