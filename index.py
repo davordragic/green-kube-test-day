@@ -1,5 +1,6 @@
 import logging
 import pickle
+import os
 from time import time
 from hashlib import md5
 from base64 import urlsafe_b64encode
@@ -8,17 +9,17 @@ from os import urandom
 import redis
 from flask import Flask, request, render_template
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG) # default should not be debug
 
 app = Flask(__name__, static_folder='public')
 r = redis.StrictRedis(
-    host='localhost',
-    port=6379,
-    db=0,
-    password='heslo'
+    host=os.environ["REDIS_HOST"], # if missing variable, app should not run
+    port=os.environ["REDIS_PORT"],
+    db=os.environ["REDIS_DB"],
+    password=os.environ["REDIS_PASSWORD"]  # requires redis configuration, for no (test) skipped
 )
 
-TTL = 3600
+TTL = 3600 # should be env with default value if not set
 UA_BLACKLIST = ['Slackbot']
 
 @app.route('/set', methods=['post'])
