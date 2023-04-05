@@ -8,3 +8,4 @@ docker-compose.yml
 Dockerfile
 # Makefile
 # config.py
+.docker-config
