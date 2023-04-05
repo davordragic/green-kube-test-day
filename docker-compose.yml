@@ -1,7 +1,8 @@
 version: "3.8"
 
+# notice: for this purpose, kubernetes costs a lot more just because of k8s cluster management fee
 services:
-  proxy: 
+  proxy: # simulate ingress of k8s
     image: nginx:1.20
     volumes: 
       - .docker-config/nginx/conf.d/:/etc/nginx/templates/
@@ -10,17 +11,29 @@ services:
       # 443 + ssl
 
   app:
-    build: .
+    # https://hub.docker.com/repository/docker/davordragic1/test-day/general
+    image: davordragic1/test-day:v1.0.0
+    # build: .
     env_file:
       - .env
+    ports:
+      - 5000
   
   redis: # should use alpine images
     image: redis:6.0 # check if python redis==2.10.3 works with specific version
     # specify env with config (pass, ency)
     command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    volumes:
+      - redis-volume:/data
+
+volumes:
+  redis-volume:
 
 # TODO: 
 # - networking
 # - pipeline to build image and upload to container repository
 # - use build img with tag in .env
 # - add restart command "unless-stopped"
+# - add persistant public IP to VM and DNS record A
+# - add certbot and expose port 443 + redirect all requests to 443
+# - tidy up git repo
